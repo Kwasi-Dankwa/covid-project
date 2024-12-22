@@ -118,9 +118,9 @@ names(active_cases) <- countries
 # Name the hospitalized_cases vector using the countries vector
 names(hospitalized_cases) <- countries
 
-postive_tested_3 <- positive_cases / tested_cases
-
-print(head(postive_tested_3, 3))
+positive_tested_3 <- (positive_cases / tested_cases)
+positive_tested_3 <- head(positive_tested_3, 3)
+print(positive_tested_3)
 
 ```
 
@@ -149,7 +149,6 @@ covid_mat <- covid_mat * 100/population
 
 print(covid_mat)
 ```
-
 #Ranking countries related to their population
 
 ```{r}
@@ -178,6 +177,66 @@ print(covid_mat_rank)
 
 # Display the first row of the matrix
 print(covid_mat_rank[1, ])
+
+# Compute the aggregated rankings by summing all rows of the covid_mat_rank matrix
+aggregated_rankings <- colSums(covid_mat_rank)
+
+# Remove the first row (tested_cases_rank) from the covid_mat_rank matrix
+covid_mat_rank_without_tested <- covid_mat_rank[-1, ]
+
+# Compute the sum of the remaining rows
+remaining_rankings <- colSums(covid_mat_rank_without_tested)
+
+# Identify the top three countries with the best effort in terms of tests conducted
+# Sort the first row (tested_cases_rank) in ascending order and extract the names
+best_effort_tested_cases_top_3 <- names(sort(covid_mat_rank[1, ], decreasing = FALSE)[1:3])
+
+# Identify the most and least affected countries based on the aggregated rankings
+most_affected_country <- names(which.max(remaining_rankings))
+least_affected_country <- names(which.min(remaining_rankings))
+
+# Display the results
+print("Aggregated rankings:")
+print(aggregated_rankings)
+
+print("Remaining rankings after removing tested_cases_rank:")
+print(remaining_rankings)
+
+print("Top 3 countries with the best effort in testing:")
+print(best_effort_tested_cases_top_3)
+
+print("Most affected country:")
+print(most_affected_country)
+
+print("Least affected country:")
+print(least_affected_country)
+
+
+```
+#List to answer questions
+```{r}
+#Question list 
+question_list <- list("Which countries have had the highest number of deaths due to COVID-19?","Which countries have had the highest number of positive cases against the number of tests?","Which countries have made the best effort in terms of the number of COVID-19 tests conducted related to their population?","Which countries were ultimately the most and least affected related to their population?")
+
+# Create a list containing the answers with the specified associations
+answer_list <- list(
+  "Death" = top_3_death,
+  "Positive tested cases" = positive_tested_3,
+  "The best effort in test related to the population" = best_effort_tested_cases_top_3,
+  "The most affected country related to its population" = most_affected_country,
+  "The least affected country related to its population" = least_affected_country
+)
+
+# Display the list
+print(answer_list)
+
+#list to create datastructures
+data_structure_list <- list(covid_df, covid_df_all_states, covid_df_all_states_cumulative,covid_df_all_states_daily, covid_mat, covid_mat_rank, vector_cols, population, countries)
+
+#list containing covid analysis
+covid_analysis_list <- list(question_list, answer_list, data_structure_list)
+
+```
 
 ```
 
