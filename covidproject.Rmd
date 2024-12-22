@@ -1,16 +1,23 @@
 ---
-title: "covidproject"
-output: html_document
+title: "Covid-19-project"
 date: "2024-12-21"
 author: "Kwasi"
+output:
+  html_document:
+    theme: readable
+    toc: true
+    toc_float: true
 ---
-
-# Covid19 EDA Project
+<div style="text-align:center;">
+# COVID-19 EDA PROJECT
+</div>
 
 ## Introduction
-This project analyzes a COVID-19 dataset containing daily and cumulative numbers of tests, cases, recoveries and deaths by country. 
+This project analyzes a COVID-19 data-set containing daily and cumulative numbers of tests, cases, recoveries and deaths by country. 
 
-I will use dplyr and data visualization with ggplot2 in R. Other techniques  I will employ include filtering data, aggregating daily to cumulative numbers, and scaling statistics to population level
+I will use dplyr and data visualization with ggplot2 in R. Other techniques  I will employ include filtering data, aggregating daily to cumulative numbers, and scaling statistics to population level.
+
+The goal of this project was to assess the impact of the Covid-19 virus in countries across the globe by filtering countries that collected data across all states.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -30,7 +37,7 @@ covid_df <- read_csv("covid19analysis.csv")
 head(covid_df)
 ```
 
-
+##Dimension of dataset
 ```{r}
 #view dimension of dataset
 library(dplyr)
@@ -38,7 +45,6 @@ dim(covid_df)
 vector_cols <- colnames(covid_df)
 glimpse(covid_df)
 ```
-
 ```{r}
 #filter and clean dataset by find countries with universal data and removing province state column
 covid_df_all_states <- covid_df %>% filter(Province_State == "All States") %>%
@@ -46,6 +52,7 @@ covid_df_all_states <- covid_df %>% filter(Province_State == "All States") %>%
 print(covid_df_all_states)
 
 ```
+
 
 ```{r}
 #selecting columns related to cumulative measures and daily measures
@@ -57,6 +64,7 @@ covid_df_all_states_daily <- covid_df_all_states %>% select(Date, Country_Region
 
 
 ```
+# Which countries have had the highest number of deaths due to COVID-19?
 ```{r}
 #Identifying countries with highest number of deaths
 library(ggplot2)
@@ -68,7 +76,7 @@ covid_df_all_states_cumulative_max <- covid_df_all_states_cumulative %>%
   print(covid_df_all_states_cumulative_max)
 ```
 
-## Plotting maximum death for each country
+# Plotting maximum death for each country
 ```{r}
 ggplot(covid_df_all_states_cumulative_max, aes(x = Two_Letter_Country_Code, y = max_deaths, color = Continent_Name )) + geom_point()
 
@@ -85,11 +93,12 @@ covid_df_all_states_daily_sum <- covid_df_all_states_daily %>%
   summarize(tested = sum(daily_tested), positive = sum(daily_positive),active = sum(active), hospitalized = sum(hospitalizedCurr))%>%
   arrange(desc(tested))
 
+# Extracting top 10 countries
 covid_top_10 <- head(covid_df_all_states_daily_sum,10)
 print(covid_top_10)
 ```
 
-#Which countries have highest number of positive cases against the number of tests
+# Which countries have highest number of positive cases against the number of tests
 ```{r}
 # Extract the Country_Region column into the countries vector
 countries <- covid_top_10$Country_Region
@@ -124,20 +133,27 @@ print(positive_tested_3)
 
 ```
 
-#Scaling data to poulation level for top 10 countries
+<div style="text-align:center;">
+# Scaling data to poulation level for top 10 countries
+</div>
 
-#the population reported in 2020 for each of these countries:
+## The population reported in 2020 for each of these countries:
 
-### United States: 331,002,651
-### Russia: 145,934,462
-### Italy: 60,461,826
-### India: 1,380,004,385
-### Turkey: 84,339,067
-### Canada: 37,742,154
-### United Kingdom: 67,886,011
-### Australia: 25,499,884
-### Peru: 32,971,854
-### Poland: 37,846,611
+* United States: 331,002,651
+* Russia: 145,934,462
+* Italy: 60,461,826
+* India: 1,380,004,385
+* Turkey: 84,339,067
+* Canada: 37,742,154
+* United Kingdom: 67,886,011
+* Australia: 25,499,884
+* Peru: 32,971,854
+* Poland: 37,846,611
+
+For population data, see [Worldometers Population by Country](https://www.worldometers.info/world-population/population-by-country/)
+
+
+
 ```{r}
 # Creating matrix to combine vectors
 covid_mat <- cbind(tested_cases, positive_cases, active_cases, hospitalized_cases)
@@ -149,7 +165,7 @@ covid_mat <- covid_mat * 100/population
 
 print(covid_mat)
 ```
-#Ranking countries related to their population
+# Ranking countries related to their population
 
 ```{r}
 # Compute rankings for the tested_cases column
@@ -213,7 +229,8 @@ print(least_affected_country)
 
 
 ```
-#List to answer questions
+
+# List to answer questions
 ```{r}
 #Question list 
 question_list <- list("Which countries have had the highest number of deaths due to COVID-19?","Which countries have had the highest number of positive cases against the number of tests?","Which countries have made the best effort in terms of the number of COVID-19 tests conducted related to their population?","Which countries were ultimately the most and least affected related to their population?")
